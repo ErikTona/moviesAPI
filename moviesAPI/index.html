@@ -4,7 +4,6 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Login</title>
-  <script src="https://unpkg.com/vue@next"></script>
   <style type="text/css">
     * {
       box-sizing: border-box; 
@@ -69,6 +68,7 @@
     <div class="message" v-if="message" :style="{ color: messageColor }">{{message}}</div>
   </div>
 
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script>
     const { createApp } = Vue;
 
