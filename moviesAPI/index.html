@@ -79,6 +79,7 @@
           password: '',
           message: '',
           messageColor: 'red',
+          //Usuario y contraseña validos
           validUsername: 'usuario123',
           validPassword: 'contrasena123'
         };
@@ -88,6 +89,7 @@
           if (this.username === this.validUsername && this.password === this.validPassword) {
             this.message = "Usuario registrado con exito";
             this.messageColor = "green";
+            window.location.href = 'movies.html';
           } else {
             this.message = "Usuario invalido";
             this.messageColor = "red";
