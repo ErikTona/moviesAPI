@@ -70,6 +70,8 @@
 
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <script>
+    const apiKey = '9613de54abfdef52d6a1ca920c995060'; // Clave de la API de movies
+
     const { createApp } = Vue;
 
     createApp({
@@ -78,23 +80,64 @@
           username: '',
           password: '',
           message: '',
-          messageColor: 'red',
-
-          //Usuario y contraseña validos
-          validUsername: 'usuario123',
-          validPassword: 'contrasena123'
-
+          messageColor: 'red'
         };
       },
       methods: {
-        //Validacion del usuario
-        login() {
-          if (this.username === this.validUsername && this.password === this.validPassword) {
-            this.message = "Usuario registrado con exito";
-            this.messageColor = "green";
-            window.location.href = 'movies.html';
-          } else {
-            this.message = "Usuario invalido";
+        async login() {
+          try {
+            const tokenResponse = await fetch(`https://api.themoviedb.org/3/authentication/token/new?api_key=${apiKey}`);
+            const tokenData = await tokenResponse.json();
+            const requestToken = tokenData.request_token;
+
+            if (!requestToken) {
+              this.message = "Error obteniendo el token de solicitud.";
+              this.messageColor = "red";
+              return;
+            }
+
+            const validateResponse = await fetch(`https://api.themoviedb.org/3/authentication/token/validate_with_login?api_key=${apiKey}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({
+                username: this.username,
+                password: this.password,
+                request_token: requestToken
+              })
+            });
+
+            const validateData = await validateResponse.json();
+
+            if (validateData.success) {
+              const sessionResponse = await fetch(`https://api.themoviedb.org/3/authentication/session/new?api_key=${apiKey}`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                  request_token: requestToken
+                })
+              });
+
+              const sessionData = await sessionResponse.json();
+
+              if (sessionData.success) {
+                this.message = "Inicio de sesión exitoso.";
+                this.messageColor = "green";
+                window.location.href = 'movies.html';
+              } else {
+                this.message = "Error creando la sesión.";
+                this.messageColor = "red";
+              }
+            } else {
+              this.message = "Usuario o contraseña incorrectos.";
+              this.messageColor = "red";
+            }
+
+          } catch (error) {
+            this.message = "Error en la autenticación: " + error.message;
             this.messageColor = "red";
           }
         }
