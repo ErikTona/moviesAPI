@@ -120,14 +120,14 @@
         },
         rateMovie(rating) {
           this.userRating = rating;
-          sessionStorage.setItem(`rating_${this.movie.id}`, rating); 
+          localStorage.setItem(`rating_${this.movie.id}`, rating); 
         },
         removeRating() {
           this.userRating = 0;
-          sessionStorage.removeItem(`rating_${this.movie.id}`); 
+          localStorage.removeItem(`rating_${this.movie.id}`); 
         },
         loadRating(id) {
-          const savedRating = sessionStorage.getItem(`rating_${id}`);
+          const savedRating = localStorage.getItem(`rating_${id}`);
           if (savedRating) {
             this.userRating = parseInt(savedRating);
           }
